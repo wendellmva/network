@@ -1,0 +1,32 @@
+storage: ./storage
+listen: 4873 #Any host:port configured in conf/config.yaml under listen is currently ignored when using docker.
+publish:
+  allow_offline: true
+auth:
+  htpasswd:
+    file: ./htpasswd
+    max_users: 1
+    # Maximum amount of users allowed to register, defaults to "+inf".
+    # You can set this to -1 to disable registration.
+    #max_users: 1000
+    #NOTE: In our solution this is not working, we have to  make it 1 at least. Otherwise you cannot log-in(on npm cli, not verdaccio ui).
+uplinks:
+  mDefault:
+    url: http://npm:4873
+    # max_fails: 100
+  
+packages:
+  # '@*/*':
+  #   access: $authenticated
+  #   publish: $authenticated
+  #   proxy: mDefault
+  # 'private-*':
+  #   access: admin
+  #   publish: admin
+  #   proxy: mDefault
+  '**':
+    access: $authenticated
+    publish: $authenticated
+    proxy: mDefault
+logs:
+  - {type: stdout, format: pretty, level: http}

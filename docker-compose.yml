@@ -3,8 +3,15 @@
 # https://docs.gitlab.com/omnibus/settings/nginx.html#using-a-non-bundled-web-server
 
 version: '3.6'
-services:
 
+volumes:
+  nginx_conf: 
+  nginx_vhost: 
+  nginx_html: 
+  nginx_certs:
+  portainer_data:
+
+services:
   watchtower:
     container_name: watchtower
     image: v2tec/watchtower
@@ -40,7 +47,7 @@ services:
     restart: always
     volumes:
     - "/var/run/docker.sock:/tmp/docker.sock:ro"
-    - "./nginx:/etc/docker-gen/templates:ro"
+    - "./.nginx:/etc/docker-gen/templates:ro"
     - "nginx_conf:/etc/nginx/conf.d"
     - "nginx_vhost:/etc/nginx/vhost.d"
     - "nginx_html:/usr/share/nginx/html"
@@ -68,58 +75,9 @@ services:
     - NGINX_PROXY_CONTAINER=nginx-gen
     labels:
     - com.centurylinklabs.watchtower.enable='false'
-
-  mariadb:
-    container_name: mariadb
-    image: mariadb:10.3
-    restart: always
-    environment:
-    - MYSQL_ROOT_PASSWORD=${ROOT_PASSWORD}
-    - MYSQL_DATABASE=wordpress
-    - MYSQL_USER=${USER_NAME}
-    - MYSQL_PASSWORD=${USER_PASSWORD}
-    ports:
-    - 3306:3306
-    volumes:
-    - "mariadb_datadir:/var/lib/mysql"
-
-  phpmyadmin:
-    container_name: phpmyadmin
-    image: phpmyadmin/phpmyadmin
-    environment:
-    - VIRTUAL_HOST=pma.${DOMAIN}
-    - LETSENCRYPT_HOST=pma.${DOMAIN}
-    - LETSENCRYPT_EMAIL=${USER_EMAIL}
-    - PMA_ARBITRARY=1
-    restart: always
-    expose:
-    - 80
-    volumes:
-    - /sessions
-
-  wordpress:
-    container_name: wordpress
-    image: btcpayserver/docker-woocommerce:3.0.6-3
-    restart: always
-    environment:
-    - WOOCOMMERCE_HOST=${DOMAIN}
-    - WORDPRESS_DB_HOST=mariadb
-    - WORDPRESS_DB_USER=${USER_NAME}
-    - WORDPRESS_DB_PASSWORD=${USER_PASSWORD}
-    - VIRTUAL_HOST=${DOMAIN}
-    - LETSENCRYPT_HOST=${DOMAIN}
-    - LETSENCRYPT_EMAIL=${USER_EMAIL}
-    expose:
-    - 80
-    links:
-    - mariadb
-    volumes:
-    - "wordpress_html:/var/www/html"
-    labels:
-    - com.centurylinklabs.watchtower.enable='true'
     
   portainer:
-    container_name: portainer
+    container_name: llt.portainer
     image: portainer/portainer
     command: -H unix:///var/run/docker.sock
     restart: always
@@ -138,68 +96,3 @@ services:
     - sslkey=/certs/portainer.${DOMAIN}.key
     labels:
     - com.centurylinklabs.watchtower.enable='true'
-
-  postgres:
-    container_name: postgres
-    image: postgres:latest
-    restart: always
-    ports:
-    - 5432:5432
-    # https://github.com/docker-library/docs/tree/master/postgres#environment-variables
-    environment:
-    - POSTGRES_USER=${USER_NAME}
-    - POSTGRES_PASSWORD=${USER_PASSWORD}
-    - POSTGRES_DB=serastrip
-    - VIRTUAL_PORT=5432
-    volumes:
-    - pgsql_db_data:/var/lib/postgresql/data
-    
-
-  # https://hub.docker.com/r/dpage/pgadmin4/
-  postgres_admin:
-    container_name: postgres_admin
-    restart: always    
-    image: dpage/pgadmin4
-    expose:
-    - 80
-    environment:
-    - PGADMIN_DEFAULT_EMAIL=${USER_EMAIL}
-    - PGADMIN_DEFAULT_PASSWORD=${USER_PASSWORD}
-    - VIRTUAL_HOST=pgsql.${DOMAIN}
-    - LETSENCRYPT_HOST=pgsql.${DOMAIN}
-    - LETSENCRYPT_EMAIL=${USER_EMAIL}
-    links:
-    - postgres
-    volumes:
-    - pgsql_data:/var/lib/pgadmin
-    labels:
-    - com.centurylinklabs.watchtower.enable='true'
-
-  graphql-engine:
-    container_name: api
-    image: hasura/graphql-engine:v1.2.2
-    ports:
-    - "8080:8080"
-    depends_on:
-    - postgres
-    restart: always
-    environment:
-      VIRTUAL_HOST: api.${DOMAIN}
-      LETSENCRYPT_HOST: api.${DOMAIN}
-      LETSENCRYPT_EMAIL: ${USER_EMAIL}
-      HASURA_GRAPHQL_DATABASE_URL: postgres://${USER_NAME}:${USER_PASSWORD}@postgres:5432/serastrip
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
-      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-      HASURA_GRAPHQL_ADMIN_SECRET: ${USER_PASSWORD}
-
-volumes:
-  nginx_conf: 
-  nginx_vhost: 
-  nginx_html: 
-  nginx_certs:
-  portainer_data:
-  verdaccio_data:
-  wordpress_html:
-  mariadb_datadir:
-  pgsql_db_data:
-  pgsql_data:

@@ -1,0 +1,102 @@
+version: '3.6'
+
+networks:
+  default:
+    external:
+      name: generated_default
+
+volumes:
+  baget_data:
+  npm_data:
+  registry_data:
+  registry_ui_data:
+
+services:
+  baget:
+    container_name: llt.baget
+    image: loicsharma/baget:latest
+    restart: always
+    expose:
+    - 80
+    - 443
+    volumes:
+    - baget_data:/var/baget
+    env_file: ./.baget/baget.env
+    environment:
+      LETSENCRYPT_HOST: baget.${DOMAIN}
+      LETSENCRYPT_EMAIL: ${DOMAIN}
+      VIRTUAL_HOST: baget.${DOMAIN}
+      VIRTUAL_HOST_NAME: "baget"
+      mem_limit: 550m
+    labels:
+    - com.centurylinklabs.watchtower.enable='true'
+
+  # todo:
+  # ./.npm/conf
+  # todo:
+  # npm adduser --registry http://${DOMAIN}:4873
+  # todo: in the repository
+  # .npmrc
+  # registry=https://npm.${DOMAIN}
+  # todo:
+  # > ~./npm/ $ chown 10001:65533 htpasswd -R
+  npm:
+    container_name: llt.npm
+    image: verdaccio/verdaccio:latest
+    restart: always
+    expose:
+    - 4873
+    volumes:
+    - npm_data:/verdaccio/storage
+    - ./.npm:/verdaccio/conf
+    environment:
+      LETSENCRYPT_HOST: npm.${DOMAIN}
+      LETSENCRYPT_EMAIL: ${DOMAIN}
+      VIRTUAL_HOST: npm.${DOMAIN}
+      VIRTUAL_HOST_NAME: "npm"
+    labels:
+    - com.centurylinklabs.watchtower.enable='true'
+
+  registry:
+    container_name: llt.registry
+    image: registry:2
+    ports:
+    - 5000:5000
+    environment:
+      LETSENCRYPT_HOST: registry.${DOMAIN}
+      LETSENCRYPT_EMAIL: ${DOMAIN}
+      VIRTUAL_HOST: registry.${DOMAIN}
+      VIRTUAL_HOST_NAME: "registry"
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/registry.password
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+    volumes:
+    - ./.docker/auth:/auth
+    - registry_data:/var/lib/registry
+    healthcheck:
+      test: ["CMD", "wget", "-s", "llt.registry:5000/v2/"]
+      interval: 5s
+      timeout: 10s  
+
+  # todo:
+  # set up file in nginx/vhost.d/registry.${DOMAIN} =>
+  # location /ui/ {
+  #     proxy_pass      http://llt.registry.ui:8000;
+  # }
+  # todo:
+  # include file
+  # ./.docker/registry-ui.yml
+  registry-ui:
+    container_name: llt.registry.ui
+    image: quiq/docker-registry-ui:latest
+    expose:
+    - 8000
+    volumes:
+    - registry_ui_data:/opt/data
+    - ./.docker/registry-ui.yml:/opt/config.yml:ro
+    depends_on:
+    - registry
+    labels:
+    - com.centurylinklabs.watchtower.enable='true'
+    
