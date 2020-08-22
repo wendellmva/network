@@ -56,5 +56,6 @@ services:
     - mariadb
     volumes:
     - "wordpress_html:/var/www/html"
+    - ".php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini"
     labels:
     - com.centurylinklabs.watchtower.enable='true'

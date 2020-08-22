@@ -12,7 +12,7 @@ volumes:
 services:
   mailserver:
     image: analogic/poste.io
-    container_name: mailserver
+    container_name: llt.mailserver
     hostname: mail.${DOMAIN}
     restart: unless-stopped
     ports:

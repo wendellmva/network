@@ -11,6 +11,7 @@ volumes:
 services:
   mautic:
     container_name: ltt.mautic
+    hostname: mautic.${DOMAIN}
     restart: unless-stopped
     image: mautic/mautic
     expose:
