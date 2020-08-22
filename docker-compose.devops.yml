@@ -24,7 +24,7 @@ services:
     env_file: ./.baget/baget.env
     environment:
       LETSENCRYPT_HOST: baget.${DOMAIN}
-      LETSENCRYPT_EMAIL: ${DOMAIN}
+      LETSENCRYPT_EMAIL: ${USER_EMAIL}
       VIRTUAL_HOST: baget.${DOMAIN}
       VIRTUAL_HOST_NAME: "baget"
       mem_limit: 550m
@@ -51,7 +51,7 @@ services:
     - ./.npm:/verdaccio/conf
     environment:
       LETSENCRYPT_HOST: npm.${DOMAIN}
-      LETSENCRYPT_EMAIL: ${DOMAIN}
+      LETSENCRYPT_EMAIL: ${USER_EMAIL}
       VIRTUAL_HOST: npm.${DOMAIN}
       VIRTUAL_HOST_NAME: "npm"
     labels:
@@ -64,7 +64,7 @@ services:
     - 5000:5000
     environment:
       LETSENCRYPT_HOST: registry.${DOMAIN}
-      LETSENCRYPT_EMAIL: ${DOMAIN}
+      LETSENCRYPT_EMAIL: ${USER_EMAIL}
       VIRTUAL_HOST: registry.${DOMAIN}
       VIRTUAL_HOST_NAME: "registry"
       REGISTRY_AUTH: htpasswd

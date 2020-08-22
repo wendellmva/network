@@ -3,7 +3,7 @@ version: '3.6'
 networks:
   default:
     external:
-      name: generated_default
+      name: network_default
 
 volumes:
   mautic-web:
@@ -13,13 +13,12 @@ services:
     container_name: ltt.mautic
     restart: unless-stopped
     image: mautic/mautic
-    depends_on:
-    - mariadb
     expose:
     - 80
+    - 443
     environment:
       LETSENCRYPT_HOST: mautic.${DOMAIN}
-      LETSENCRYPT_EMAIL: ${DOMAIN}
+      LETSENCRYPT_EMAIL: ${USER_EMAIL}
       VIRTUAL_HOST: mautic.${DOMAIN}
       VIRTUAL_HOST_NAME: "mautic"
       MAUTIC_DB_HOST: mariadb
