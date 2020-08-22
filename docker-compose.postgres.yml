@@ -47,7 +47,7 @@ services:
     labels:
     - com.centurylinklabs.watchtower.enable='true'
 
-    hasura:
+  hasura:
     container_name: ltt.hasura
     image: hasura/graphql-engine:latest
     ports:
