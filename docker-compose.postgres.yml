@@ -47,8 +47,8 @@ services:
     labels:
     - com.centurylinklabs.watchtower.enable='true'
 
-  graphql-engine:
-    container_name: ltt.graphql.engine
+    hasura:
+    container_name: ltt.hasura
     image: hasura/graphql-engine:latest
     ports:
     - "8080:8080"
@@ -56,8 +56,8 @@ services:
     - postgres
     restart: always
     environment:
-      VIRTUAL_HOST: api.${DOMAIN}
-      LETSENCRYPT_HOST: api.${DOMAIN}
+      VIRTUAL_HOST: hasura.${DOMAIN}
+      LETSENCRYPT_HOST: hasura.${DOMAIN}
       LETSENCRYPT_EMAIL: ${USER_EMAIL}
       HASURA_GRAPHQL_DATABASE_URL: postgres://${USER_NAME}:${USER_PASSWORD}@postgres:5432/${NAME}
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console

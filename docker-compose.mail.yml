@@ -1,0 +1,34 @@
+
+version: '3.6'
+
+networks:
+  default:
+    external:
+      name: generated_default
+
+volumes:
+    mailserver_data:
+
+services:
+  mailserver:
+    image: poste.io/mailserver:dev
+    container_name: mailserver
+    restart: unless-stopped
+    ports:
+    - "25:25"
+    - "110:110"
+    - "143:143"
+    - "587:587"
+    - "993:993"
+    - "995:995"
+    - "4190:4190"
+    environment:
+      LETSENCRYPT_HOST: mail.${DOMAIN}
+      LETSENCRYPT_EMAIL: ${DOMAIN}
+      VIRTUAL_HOST: mail.${DOMAIN}
+      VIRTUAL_HOST_NAME: "mail"
+      HTTPS=OFF
+    volumes:
+    - /etc/localtime:/etc/localtime:ro
+    - /var/lib/docker/volumes/network_nginx_html/_data/.well-known:/opt/www/.well-known
+    - mailserver_data:/data
