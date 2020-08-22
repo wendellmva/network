@@ -4,6 +4,9 @@
 
 version: '3.6'
 
+networks:
+  network_default:
+
 volumes:
   nginx_conf: 
   nginx_vhost: 
