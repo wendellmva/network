@@ -7,14 +7,15 @@ networks:
 
 volumes:
   mautic-web:
-  mariadb_datadir:
+  mautic-db:
 
 services:
+
   mautic:
     container_name: llt.mautic
     hostname: ${DOMAIN}
     restart: unless-stopped
-    image: mautic/mautic
+    image: mautic/mautic:v3
     environment:
       LETSENCRYPT_HOST: ${DOMAIN}
       LETSENCRYPT_EMAIL: ${USER_EMAIL}
@@ -28,10 +29,10 @@ services:
     volumes:
     - mautic-web:/var/www/html
 
-  mariadb:
-    container_name: llt.mariadb
-    image: mariadb:latest
-    restart: always
+  mautic_db:
+    container_name: llt.mautic.db
+    image: powertic/percona-docker
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
       MYSQL_DATABASE: ${USER_NAME}
@@ -40,16 +41,17 @@ services:
     ports:
     - 3306:3306
     volumes:
-    - "mariadb_datadir:/var/lib/mysql"
+    - mautic-db:iadb_datadir:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --sql-mode=""
 
-  phpmyadmin:
-    container_name: llt.php.admin
+  mautic_db_admin:
+    container_name: llt.mautic.db.admin
     image: phpmyadmin/phpmyadmin
     environment:
       VIRTUAL_HOST: pma.${DOMAIN}
       LETSENCRYPT_HOST: pma.${DOMAIN}
       LETSENCRYPT_EMAIL: ${USER_EMAIL}
       PMA_ARBITRARY: 1
-    restart: always
+    restart: unless-stopped
     volumes:
     - /sessions
