@@ -12,13 +12,13 @@ volumes:
 services:
   mautic:
     container_name: llt.mautic
-    hostname: mautic.${DOMAIN}
+    hostname: ${DOMAIN}
     restart: unless-stopped
     image: mautic/mautic
     environment:
-      LETSENCRYPT_HOST: mautic.${DOMAIN}
+      LETSENCRYPT_HOST: ${DOMAIN}
       LETSENCRYPT_EMAIL: ${USER_EMAIL}
-      VIRTUAL_HOST: mautic.${DOMAIN}
+      VIRTUAL_HOST: ${DOMAIN}
       VIRTUAL_HOST_NAME: "mautic"
       MAUTIC_DB_HOST: mariadb
       MAUTIC_DB_USER: ${USER_NAME}
