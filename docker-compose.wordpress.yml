@@ -25,7 +25,7 @@ services:
     - "mariadb_datadir:/var/lib/mysql"
 
   phpmyadmin:
-    container_name: ltt.php.admin
+    container_name: llt.php.admin
     image: phpmyadmin/phpmyadmin
     environment:
     - VIRTUAL_HOST=pma.${DOMAIN}
@@ -39,7 +39,7 @@ services:
     - /sessions
 
   wordpress:
-    container_name: ltt.wordpress
+    container_name: llt.wordpress
     image: btcpayserver/docker-woocommerce:3.0.6-3
     restart: always
     environment:

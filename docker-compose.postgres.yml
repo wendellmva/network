@@ -11,7 +11,7 @@ volumes:
 
 services:
   postgres:
-    container_name: ltt.postgres
+    container_name: llt.postgres
     image: postgres:latest
     restart: always
     ports:
@@ -29,7 +29,7 @@ services:
 
   # https://hub.docker.com/r/dpage/pgadmin4/
   postgres_admin:
-    container_name: ltt.postgres.admin
+    container_name: llt.postgres.admin
     restart: always    
     image: dpage/pgadmin4
     expose:
@@ -48,7 +48,7 @@ services:
     - com.centurylinklabs.watchtower.enable='true'
 
   hasura:
-    container_name: ltt.hasura
+    container_name: llt.hasura
     image: hasura/graphql-engine:latest
     ports:
     - "8080:8080"
