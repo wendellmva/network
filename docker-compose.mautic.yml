@@ -16,6 +16,9 @@ services:
     hostname: ${DOMAIN}
     restart: unless-stopped
     image: mautic/mautic:v3
+    expose:
+    - 80
+    - 443
     environment:
       LETSENCRYPT_HOST: ${DOMAIN}
       LETSENCRYPT_EMAIL: ${USER_EMAIL}
