@@ -7,25 +7,49 @@ networks:
 
 volumes:
   mautic-web:
+  mariadb_datadir:
 
 services:
   mautic:
-    container_name: ltt.mautic
+    container_name: llt.mautic
     hostname: mautic.${DOMAIN}
     restart: unless-stopped
     image: mautic/mautic
-    expose:
-    - 80
-    - 443
     environment:
       LETSENCRYPT_HOST: mautic.${DOMAIN}
       LETSENCRYPT_EMAIL: ${USER_EMAIL}
       VIRTUAL_HOST: mautic.${DOMAIN}
       VIRTUAL_HOST_NAME: "mautic"
       MAUTIC_DB_HOST: mariadb
-      MAUTIC_DB_USER: mautic
+      MAUTIC_DB_USER: ${USER_NAME}
       MAUTIC_DB_PASSWORD: ${USER_PASSWORD}
       MAUTIC_TRUSTED_PROXIES: 0.0.0.0/0
       MAUTIC_RUN_CRON_JOBS: "true"
     volumes:
     - mautic-web:/var/www/html
+
+    mariadb:
+      container_name: llt.mariadb
+      image: mariadb:10.3
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+        MYSQL_DATABASE: ${USER_NAME}
+        MYSQL_USER: ${USER_NAME}
+        MYSQL_PASSWORD: ${USER_PASSWORD}
+      ports:
+      - 3306:3306
+      volumes:
+      - "mariadb_datadir:/var/lib/mysql"
+  
+    phpmyadmin:
+      container_name: llt.php.admin
+      image: phpmyadmin/phpmyadmin
+      environment:
+        VIRTUAL_HOST: pma.${DOMAIN}
+        LETSENCRYPT_HOST: pma.${DOMAIN}
+        LETSENCRYPT_EMAIL: ${USER_EMAIL}
+        PMA_ARBITRARY: 1
+      restart: always
+      volumes:
+      - /sessions
