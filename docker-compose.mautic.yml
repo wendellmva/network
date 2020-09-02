@@ -30,7 +30,7 @@ services:
 
   mariadb:
     container_name: llt.mariadb
-    image: mariadb:10.3
+    image: mariadb:latest
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
