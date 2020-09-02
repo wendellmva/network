@@ -28,28 +28,28 @@ services:
     volumes:
     - mautic-web:/var/www/html
 
-    mariadb:
-      container_name: llt.mariadb
-      image: mariadb:10.3
-      restart: always
-      environment:
-        MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
-        MYSQL_DATABASE: ${USER_NAME}
-        MYSQL_USER: ${USER_NAME}
-        MYSQL_PASSWORD: ${USER_PASSWORD}
-      ports:
-      - 3306:3306
-      volumes:
-      - "mariadb_datadir:/var/lib/mysql"
-  
-    phpmyadmin:
-      container_name: llt.php.admin
-      image: phpmyadmin/phpmyadmin
-      environment:
-        VIRTUAL_HOST: pma.${DOMAIN}
-        LETSENCRYPT_HOST: pma.${DOMAIN}
-        LETSENCRYPT_EMAIL: ${USER_EMAIL}
-        PMA_ARBITRARY: 1
-      restart: always
-      volumes:
-      - /sessions
+  mariadb:
+    container_name: llt.mariadb
+    image: mariadb:10.3
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MYSQL_DATABASE: ${USER_NAME}
+      MYSQL_USER: ${USER_NAME}
+      MYSQL_PASSWORD: ${USER_PASSWORD}
+    ports:
+    - 3306:3306
+    volumes:
+    - "mariadb_datadir:/var/lib/mysql"
+
+  phpmyadmin:
+    container_name: llt.php.admin
+    image: phpmyadmin/phpmyadmin
+    environment:
+      VIRTUAL_HOST: pma.${DOMAIN}
+      LETSENCRYPT_HOST: pma.${DOMAIN}
+      LETSENCRYPT_EMAIL: ${USER_EMAIL}
+      PMA_ARBITRARY: 1
+    restart: always
+    volumes:
+    - /sessions
