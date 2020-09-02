@@ -2,7 +2,7 @@
 # https://hub.docker.com/r/gitlab/gitlab-ce
 # https://docs.gitlab.com/omnibus/settings/nginx.html#using-a-non-bundled-web-server
 
-version: '3.6'
+version: '3.3'
 
 networks:
   network_default:
