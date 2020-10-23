@@ -3,7 +3,7 @@ version: '3.3'
 networks:
   default:
     external:
-      name: generated_default
+      name: network_default
 
 volumes:
   wordpress_html:
@@ -43,8 +43,9 @@ services:
     image: btcpayserver/docker-woocommerce:3.0.6-3
     restart: always
     environment:
-    - WOOCOMMERCE_HOST=${DOMAIN}
+    - WOOCOMMERCE_HOST=${DOMAIN}    
     - WORDPRESS_DB_HOST=mariadb
+    - WORDPRESS_DB_NAME=${NAME}
     - WORDPRESS_DB_USER=${USER_NAME}
     - WORDPRESS_DB_PASSWORD=${USER_PASSWORD}
     - VIRTUAL_HOST=${DOMAIN}
