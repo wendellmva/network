@@ -37,6 +37,7 @@ services:
     - "nginx_vhost:/etc/nginx/vhost.d"
     - "nginx_html:/usr/share/nginx/html"
     - "nginx_certs:/etc/nginx/certs:ro"
+    - "./.nginx/client_max_body_size:/etc/nginx/conf.d/client_max_body_size.conf:ro"
     environment:
     - VIRTUAL_PROTO=https
     - VIRTUAL_PORT=443
@@ -80,7 +81,7 @@ services:
     - com.centurylinklabs.watchtower.enable='false'
     
   portainer:
-    container_name: llt.portainer
+    container_name: portainer
     image: portainer/portainer
     command: -H unix:///var/run/docker.sock
     restart: always

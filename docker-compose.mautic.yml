@@ -12,7 +12,7 @@ volumes:
 services:
 
   mautic:
-    container_name: llt.mautic
+    container_name: mautic
     hostname: mautic.${DOMAIN}
     restart: unless-stopped
     image: mautic/mautic:v3

@@ -1,0 +1,42 @@
+version: '3.3'
+
+networks:
+  network_default:
+
+services:
+
+  app:
+    container_name: llt_simillum_app
+    restart: always
+    image: lowlandtech/simillum/app:latest
+    build:
+      context: ./src/app/src/lowlandtech.simillum
+      dockerfile: Dockerfile
+    expose:
+    - 80
+    - 443
+    environment:
+      LETSENCRYPT_HOST: app.${DOMAIN}
+      LETSENCRYPT_EMAIL: ${USER_EMAIL}
+      VIRTUAL_HOST: app.${DOMAIN}
+      VIRTUAL_HOST_NAME: app
+    labels:
+    - com.centurylinklabs.watchtower.enable='true'
+
+  api:
+    container_name: llt_simillum_api
+    restart: always
+    image: lowlandtech/simillum/api:latest
+    build:
+      context: ./src/app/src/lowlandtech.simillum.api
+      dockerfile: Dockerfile
+    expose:
+    - 80
+    - 443
+    environment:
+      LETSENCRYPT_HOST: api.${DOMAIN}
+      LETSENCRYPT_EMAIL: ${USER_EMAIL}
+      VIRTUAL_HOST: api.${DOMAIN}
+      VIRTUAL_HOST_NAME: api
+    labels:
+    - com.centurylinklabs.watchtower.enable='true'

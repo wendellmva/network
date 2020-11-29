@@ -1,0 +1,51 @@
+# $ git clone git@github.com:simillum/hangfire.git src/hangfire
+version: '3.3'
+
+networks:
+  default:
+    external:
+      name: network_default
+
+volumes:
+  redis_data:
+  pgsql_db_data:
+  pgsql_data:
+
+services:
+
+  hangfire:
+    container_name: hangfire
+    image: lowlandtech/simillum/hangfire:latest
+    build:
+      context: ./src/hangfire/src
+      dockerfile: frontend/Dockerfile
+    environment:
+    - VIRTUAL_HOST=hangfire.${DOMAIN}
+    - LETSENCRYPT_HOST=hangfire.${DOMAIN}
+    - LETSENCRYPT_EMAIL=${USER_EMAIL}
+    - ASPNETCORE_ENVIRONMENT=development
+    ports:
+    - 5555:80
+    volumes:
+    - ./src/frontend:/src/app
+    depends_on:
+    - redis
+
+  hangfire_worker:
+    container_name: hangfire.worker
+    image: lowlandtech/simillum/worker:latest
+    build:
+      context: ./src/hangfire/src
+      dockerfile: worker/Dockerfile
+    stdin_open: true
+    tty: true
+    environment:
+    - ASPNETCORE_ENVIRONMENT=development
+    depends_on:
+    - redis
+
+  redis:
+    container_name: redis
+    image: redis:4-alpine
+    volumes:
+    - redis_data:/data

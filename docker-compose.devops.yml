@@ -13,7 +13,7 @@ volumes:
 
 services:
   baget:
-    container_name: llt.baget
+    container_name: baget
     image: loicsharma/baget:latest
     restart: always
     expose:
@@ -41,7 +41,7 @@ services:
   # todo:
   # > ~./npm/ $ chown 10001:65533 htpasswd -R
   npm:
-    container_name: llt.npm
+    container_name: npm
     image: verdaccio/verdaccio:latest
     restart: always
     expose:
@@ -58,7 +58,7 @@ services:
     - com.centurylinklabs.watchtower.enable='true'
 
   registry:
-    container_name: llt.registry
+    container_name: registry
     image: registry:2
     ports:
     - 5000:5000
@@ -75,20 +75,20 @@ services:
     - ./.docker/auth:/auth
     - registry_data:/var/lib/registry
     healthcheck:
-      test: ["CMD", "wget", "-s", "llt.registry:5000/v2/"]
+      test: ["CMD", "wget", "-s", "registry:5000/v2/"]
       interval: 5s
       timeout: 10s  
 
   # todo:
   # set up file in nginx/vhost.d/registry.${DOMAIN} =>
   # location /ui/ {
-  #     proxy_pass      http://llt.registry.ui:8000;
+  #     proxy_pass      http://registry.ui:8000;
   # }
   # todo:
   # include file
   # ./.docker/registry-ui.yml
   registry-ui:
-    container_name: llt.registry.ui
+    container_name: registry.ui
     image: quiq/docker-registry-ui:latest
     expose:
     - 8000

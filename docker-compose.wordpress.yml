@@ -5,27 +5,10 @@ networks:
     external:
       name: network_default
 
-volumes:
-  wordpress_html:
-  mariadb_datadir:
-
 services:
-  mariadb:
-    container_name: llt.mariadb
-    image: mariadb:10.3
-    restart: always
-    environment:
-    - MYSQL_ROOT_PASSWORD=${ROOT_PASSWORD}
-    - MYSQL_DATABASE=${NAME}
-    - MYSQL_USER=${USER_NAME}
-    - MYSQL_PASSWORD=${USER_PASSWORD}
-    ports:
-    - 3306:3306
-    volumes:
-    - "mariadb_datadir:/var/lib/mysql"
 
   phpmyadmin:
-    container_name: llt.php.admin
+    container_name: php.admin
     image: phpmyadmin/phpmyadmin
     environment:
     - VIRTUAL_HOST=pma.${DOMAIN}
@@ -37,26 +20,5 @@ services:
     - 80
     volumes:
     - /sessions
-
-  wordpress:
-    container_name: llt.wordpress
-    image: btcpayserver/docker-woocommerce:3.0.6-3
-    restart: always
-    environment:
-    - WOOCOMMERCE_HOST=${DOMAIN}    
-    - WORDPRESS_DB_HOST=mariadb
-    - WORDPRESS_DB_NAME=${NAME}
-    - WORDPRESS_DB_USER=${USER_NAME}
-    - WORDPRESS_DB_PASSWORD=${USER_PASSWORD}
-    - VIRTUAL_HOST=${DOMAIN}
-    - LETSENCRYPT_HOST=${DOMAIN}
-    - LETSENCRYPT_EMAIL=${USER_EMAIL}
-    expose:
-    - 80
-    links:
-    - mariadb
-    volumes:
-    - "wordpress_html:/var/www/html"
-    - ".php/uploads.ini:/usr/local/etc/php/conf.d/uploads.ini"
     labels:
     - com.centurylinklabs.watchtower.enable='true'
