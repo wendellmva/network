@@ -1,4 +1,3 @@
-# Declare an array of string with type
 NAME="DOMAIN"
 DOMAIN="DOMAIN.com"
 USER_EMAIL="admin@lowlandtech.com"
