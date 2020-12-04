@@ -14,7 +14,7 @@ chmod +x /usr/local/bin/docker-compose
 git clone https://github.com/lowlandtech/network
 cd network
 chmod +x wordpress.sh
-wordpress $DOMAINS $USER_EMAIL $USER_PASSWORD $ROOT_PASSWORD $PORT
+./wordpress $DOMAINS $USER_EMAIL $USER_PASSWORD $ROOT_PASSWORD $PORT
 wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
 dpkg -i packages-microsoft-prod.deb
 apt update

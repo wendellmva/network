@@ -11,6 +11,20 @@ volumes:
 
 services:
 
+  db:
+    container_name: mautic_db
+    image: mariadb:latest
+    restart: always
+    expose: 
+    - 3306
+    environment:
+    - MYSQL_ROOT_PASSWORD=${ROOT_PASSWORD}
+    - MYSQL_DATABASE=mautic
+    - MYSQL_USER=${USER_NAME}
+    - MYSQL_PASSWORD=${USER_PASSWORD}
+    volumes:
+    - "mautic-db:/var/lib/mysql"
+
   mautic:
     container_name: mautic
     hostname: mautic.${DOMAIN}
@@ -24,8 +38,10 @@ services:
       LETSENCRYPT_EMAIL: ${USER_EMAIL}
       VIRTUAL_HOST: mautic.${DOMAIN}
       VIRTUAL_HOST_NAME: "mautic"
-      MAUTIC_DB_HOST: mariadb
+      MAUTIC_DB_HOST: mautic_db
       MAUTIC_DB_USER: ${USER_NAME}
       MAUTIC_DB_PASSWORD: ${USER_PASSWORD}
     volumes:
     - mautic-web:/var/www/html
+    depends_on: 
+    - db
