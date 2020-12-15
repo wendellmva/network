@@ -30,6 +30,6 @@ services:
       VIRTUAL_HOST_NAME: "mail"
       HTTPS: "OFF"
     volumes:
-    - /etc/localtime:/etc/localtime:ro
-    - /var/lib/docker/volumes/network_nginx_html/_data/.well-known:/opt/www/.well-known
-    - mailserver_data:/data
+    - "/etc/localtime:/etc/localtime:ro"
+    - "./nginx/html/.well-known:/opt/www/.well-known:rw"
+    - "mailserver_data:/data"
